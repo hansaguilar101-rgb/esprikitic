@@ -1,0 +1,49 @@
+
+import sqlite3
+
+# Connect to the SQLite database
+conn = sqlite3.connect('students.db')
+
+# Create students table
+conn.execute("""
+CREATE TABLE IF NOT EXISTS students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    student_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    program TEXT NOT NULL,
+    year INTEGER NOT NULL,
+    section TEXT NOT NULL,
+    source TEXT DEFAULT 'Local'
+)
+""")
+
+# Insert sample student records
+students = [
+    ('24-00162', 'Johannes Aguilar', 'BSIT', 3, 'A', 'Local'),
+    ('24-00163', 'Sample Student One', 'BSIT', 2, 'A', 'Local'),
+    ('24-00164', 'Sample Student Two', 'BSIT', 1, 'B', 'Local'),
+    ('24-00165', 'Sample Student Three', 'BSIT', 3, 'A', 'Local'),
+    ('24-00166', 'Sample Student Four', 'BSIT', 2, 'B', 'Local')
+]
+
+# Save sample records
+conn.executemany("""
+INSERT INTO students
+(student_id, name, program, year, section, source)
+VALUES (?, ?, ?, ?, ?, ?)
+""", students)
+
+# Save changes
+conn.commit()
+
+# Display database records
+records = conn.execute("SELECT * FROM students").fetchall()
+
+print("DATABASE INITIALIZED SUCCESSFULLY!")
+print("-----------------------------------")
+
+for record in records:
+    print(record)
+
+# Close database connection
+conn.close()
